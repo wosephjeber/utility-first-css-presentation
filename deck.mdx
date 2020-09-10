@@ -1,0 +1,581 @@
+import { CodeSurfer } from 'code-surfer'
+import { github } from "@code-surfer/themes"
+import { themes } from 'mdx-deck'
+
+export const theme = {
+  ...themes.swiss,
+  ...themes.prism,
+}
+
+# Using Utility-First CSS to Manage CSS at Scale
+
+---
+
+Styling with CSS is very easy, but managing and scaling CSS stylesheets is very hard.
+
+---
+
+## Challenges
+
+### CSS is global
+
+---
+
+## Challenges
+
+### Specificity is hard
+
+One approach for keeping styles scoped to a specific interface element is to chain or nest selectors.
+
+This increases a selector's _specificity_ (not good).
+
+---
+
+<CodeSurfer theme={github}>
+
+```css 1:13
+.quote {
+  border-left: solid 1px;
+  display: block;
+  font-size: 1em;
+  font-style: italic;
+  padding-left: 1em;
+}
+
+.quote .citation {
+  color: gray;
+  font-style: normal;
+}
+
+
+/* A handy utility class, right? */
+.emphasized {
+  color: blue;
+  font-weight: bold;
+}
+```
+
+```css 14:18
+.quote {
+  border-left: solid 1px;
+  display: block;
+  font-size: 1em;
+  font-style: italic;
+  padding-left: 1em;
+}
+
+.quote .citation {
+  color: gray;
+  font-style: normal;
+}
+
+
+/* A handy utility class, right? */
+.emphasized {
+  color: blue;
+  font-weight: bold;
+}
+```
+
+```html
+<blockquote class="quote">
+  <p>I love deadlines. I like the whooshing sound they make as they fly by.</p>
+  <footer class="citation emphasized">
+      Douglas Adams
+  </footer>
+</blockquote>
+```
+
+```css
+.citation.emphasized {
+  color: blue;
+  font-weight: bold;
+}
+
+/* or */
+
+.emphasized {
+  color: blue !important;
+  font-weight: bold;
+}
+```
+
+</CodeSurfer>
+
+---
+
+It's easy to end up in a specificity arms race.
+
+--- 
+
+## Challenges
+
+### Duplication and bloat
+
+To avoid leaky styles or to avoid the hassle of refactoring specificity issues, the path of least resistance is typically to start fresh with a whole new selector and duplicate styles.
+
+---
+
+## The result
+
+An "append-only" codebase.
+
+---
+
+## Solutions
+
+- OOCSS (Object Oriented CSS)
+- SMACSS (Scalable and Modular Architecture for CSS)
+- BEM (Block Element Modifier)
+- Atomic CSS
+- Utility-First CSS
+
+---
+
+### Object Oriented Paradigm
+
+OOCSS, SMACSS, and BEM
+
+---
+
+### Object Oriented Paradigm
+
+#### OOCSS
+
+Breaks an interface into reusable "objects" and how to write reusable and sharable CSS selectors.
+
+- Separate structure from skin
+- Separate containers from content
+
+---
+
+### Object Oriented Paradigm
+
+#### SMACSS (Scalable and Modular Architecture for CSS)
+
+Think about and separate styles into 5 categories:
+
+- Base
+- Layout
+- Module
+- State
+- Theme
+
+---
+
+### Object Oriented Paradigm
+
+#### BEM
+
+Define and style your interface with the terms "block," "element," and "modifier."
+
+---
+
+<CodeSurfer theme={github}>
+
+```html title="BEM would look like this:"
+<div class="dropdown dropdown--open">
+  <button class="dropdown__toggle">Open</button>
+  <ul class="dropdown__content">
+    <li class="dropdown__item">Option 1</li>
+    <li class="dropdown__item dropdown__item--selected">Option 1</li>
+  </ul>
+</div>
+```
+
+```css 
+.dropdown {
+  position: relative;
+}
+
+.dropdown__toggle {
+  border: solid 1px #ddd;
+  display: block;
+}
+
+.dropdown__content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  width: 100%;
+}
+
+.dropdown--open .dropdown__toggle {
+  border-color: #333;
+}
+
+.dropdown--open .dropdown__content {
+  display: block;
+}
+```
+
+</CodeSurfer>
+
+---
+
+### Object Oriented Paradigm
+
+#### Pros
+
+- minimal nesting
+- clear relationships between elements
+- separation of HTML structure from CSS selectors
+
+---
+
+### Object Oriented Paradigm
+
+#### Cons
+
+Naming is hard, and pretty much everything needs to be named carefully.
+
+CSS is still likely to bloat as you add more features and interfaces.
+
+--- 
+
+### Object Oriented Paradigm
+
+#### Cons
+
+Changing the appearance of an interface means modifying CSS.
+
+**Forces you to start with abstractions, which are likely to be premature abstractions.**
+
+---
+
+### Functional Paradigm
+
+CSS architectures that follow a functional paradigm have been gaining popularity:
+
+- Atomic CSS
+- Utility-First CSS
+- Tachyons
+- TailwindCSS
+
+---
+
+### Functional Paradigm
+
+Favors small, single-purpose classes that describe visual function.
+
+Favors flexibility and speed, acknowledges that designs and patterns will constantly change.
+
+---
+
+### Functional Paradigm
+
+> You can't predict the future. This is why you should always favor composition over inheritance. - Sarah Dayan, [In Defence of Utility-First CSS](https://frontstuff.io/in-defense-of-utility-first-css)
+
+---
+
+
+<CodeSurfer theme={github}>
+
+```css 1:16 title="A responsive Card component in BEM:"
+.card {
+  border-radius: .25em;
+  box-shadow: 0 1em 1em rgba(0,0,0,0.1);
+  display: flex;
+}
+
+.card__body {
+  flex-grow: 1;
+  padding: 0.5em;
+}
+
+.card__avatar {
+  border-radius: .25em;
+  display: block;
+  margin-bottom: .5em;
+}
+
+.card__title {
+  font-weight: bold;
+  text-align: center;
+}
+
+.card__footer {
+  border-top: solid 1px gray;
+  padding: 0.5em;
+}
+
+.card.card--clickable {
+  cursor: pointer;
+}
+
+.card.card--clickable:hover {
+  box-shadow: 0 2em 1em rgba(0,0,0,0.2);
+}
+
+@media (min-width: 20em) {
+  .card {
+    width: 12em;
+    height: 20em;
+  }
+  
+  .card__body,
+  .card__footer {
+    padding: 1em
+  }
+}
+```
+
+```css 17:30
+.card {
+  border-radius: .25em;
+  box-shadow: 0 1em 1em rgba(0,0,0,0.1);
+  display: flex;
+}
+
+.card__body {
+  flex-grow: 1;
+  padding: 0.5em;
+}
+
+.card__avatar {
+  border-radius: .25em;
+  display: block;
+  margin-bottom: .5em;
+}
+
+.card__title {
+  font-weight: bold;
+  text-align: center;
+}
+
+.card__footer {
+  border-top: solid 1px gray;
+  padding: 0.5em;
+}
+
+.card.card--clickable {
+  cursor: pointer;
+}
+
+.card.card--clickable:hover {
+  box-shadow: 0 2em 1em rgba(0,0,0,0.2);
+}
+
+@media (min-width: 20em) {
+  .card {
+    width: 12em;
+    height: 20em;
+  }
+  
+  .card__body,
+  .card__footer {
+    padding: 1em
+  }
+}
+```
+
+```css 32:46
+.card {
+  border-radius: .25em;
+  box-shadow: 0 1em 1em rgba(0,0,0,0.1);
+  display: flex;
+}
+
+.card__body {
+  flex-grow: 1;
+  padding: 0.5em;
+}
+
+.card__avatar {
+  border-radius: .25em;
+  display: block;
+  margin-bottom: .5em;
+}
+
+.card__title {
+  font-weight: bold;
+  text-align: center;
+}
+
+.card__footer {
+  border-top: solid 1px gray;
+  padding: 0.5em;
+}
+
+.card.card--clickable {
+  cursor: pointer;
+}
+
+.card.card--clickable:hover {
+  box-shadow: 0 2em 1em rgba(0,0,0,0.2);
+}
+
+@media (min-width: 20em) {
+  .card {
+    width: 12em;
+    height: 20em;
+  }
+  
+  .card__body,
+  .card__footer {
+    padding: 1em
+  }
+}
+```
+
+```html
+<div class="card">
+  <div class="card__body">
+    <img class="card__avatar" src="face.jpg" />
+    <div class="card__title">
+      Bad User
+    </div>
+  </div>
+  <div class="card__footer">
+    Demerits: 5
+  </div>
+</div>
+```
+
+```html
+<a class="card card--clickable" href="somewhere.html">
+  <div class="card__body">
+    <img class="card__avatar" src="face.jpg" />
+    <div class="card__title">
+      Bad User
+    </div>
+  </div>
+  <div class="card__footer">
+    Demerits: 5
+  </div>
+</a>
+```
+
+</CodeSurfer>
+
+---
+
+<CodeSurfer theme={github}>
+
+```html title="HTML with functional CSS"
+<div
+  class="radius--small shadow--medium breakpoint-medium:width--12 breakpoint-medium:height--20 flex"
+>
+  <div class="padding--small breakpoint-medium:padding--medium flex-grow--1">
+    <img class="radius--small margin-b--medium" src="face.jpg" />
+    <div class="font-weight--bold text-align--center">
+      Bad User
+    </div>
+  </div>
+  <div
+    class="padding--small breakpoint-medium:padding--medium border-t--thin border-color--gray"
+  >
+    Demerits: 5
+  </div>
+</div>
+```
+
+```html
+<a
+  class="radius--small shadow--medium breakpoint-medium:width--12 breakpoint-medium:height--20 flex hover:shadow--large cursor--pointer"
+  href="somewhere.html"
+>
+  <div class="padding--small breakpoint-medium:padding--medium flex-grow--1">
+    <img class="radius--small margin-b--medium" src="face.jpg" />
+    <div class="font-weight--bold text-align--center">
+      Bad User
+    </div>
+  </div>
+  <div
+    class="padding--small breakpoint-medium:padding--medium border-t--thin border-color--gray"
+  >
+    Demerits: 5
+  </div>
+</a>
+```
+
+</CodeSurfer>
+
+---
+
+_Kind of offensive?_
+
+---
+
+### Functional Paradigm
+
+#### Pros:
+
+- No time spent coming up with semantic names (remember, naming is hard)
+- Less duplication in stylesheet
+- Creating new interfaces require no new CSS
+- Safer – Changes happen in HTML, which is local, instead of CSS, which is global
+
+---
+
+### Functional Paradigm
+
+#### Cons:
+
+- The resulting HTML is ugly
+
+---
+
+### Functional Paradigm
+
+#### Cons:
+
+- No context-aware styles
+
+---
+
+### Functional Paradigm
+
+#### Cons:
+
+- CSS-powered themeing is more limited
+
+---
+
+### Functional Paradigm
+
+#### Cons:
+
+- Stylesheet size: utility classes for every property and variant need to be defined upfront, but many may never be used
+
+---
+
+### Functional Paradigm
+
+#### Cons:
+
+- Global design changes can be tedious
+
+---
+
+### Functional Paradigm
+
+#### Notes
+
+All utility classes should have the same specificity score (10). Priority is determined by their order in the stylesheet.
+
+For example, does `.margin-b--none` take precedence over `.margin--m`?
+
+---
+
+## Takeaways:
+
+- Utility first allows for rapid prototyping and building customized interfaces with no custom CSS
+
+---
+
+## Takeaways:
+
+- Favors composition instead of inheritance (just like React best practices)
+
+---
+
+## Takeaways:
+A combination of BEM-like component classes and utility classes strikes a nice balance
+
+Use utility classes for one-off cases, prototyping, exploring new patterns, etc. Extract utility classes into "component" classes when patterns emerge or when benefits of context-aware styles outway the costs
+
+---
+
+## Takeaways:
+- Reusable React components can abstract away the complexity and "mess" of applying many utility classes, so developers only need to think about the API of the component (via props) and not about the styling concerns
