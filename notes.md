@@ -296,14 +296,15 @@ And here's what the HTML would look like with functional CSS:
 </a>
 ```
 
-At first glance that might look really offensive. And to be honest, it kind of is.
+At first glance that might look really offensive. And to be honest, it kind of is. But it has a lot of merit.
 
 #### Pros:
 
 - No time spent coming up with semantic names (remember, naming is hard)
 - Less duplication in stylesheet
 - Creating new interfaces require no new CSS
-- Safer – Changes happen in HTML, which is local, instead of CSS, which is global
+- You can read the markup and understand how an element is being styled
+- Changes happen in HTML, which is local, instead of CSS, which is global
 
 #### Cons:
 
@@ -311,27 +312,28 @@ Here are some arguments against utility-first CSS.
 
 - The resulting HTML is ugly
 - No context-aware styles (no inheritance, so styles don't adapt to their context, and styles also can't adapt to sibling relationships)
-    - Some would argue that this is a pro, as the result of adding a utility class should always be predicatble. But this comes at the cost of ease-of-use.
+    - Some would argue that this is a pro, as the result of adding a utility class should always be predictable. But this comes at the cost of ease-of-use in certain scenarios.
 - CSS-powered themeing is more limited
     - Individual utility classes can have their properties customized for a certain theme, but broader or more coordinated style variations can't be accomplished with only CSS
         - e.g. consider a card component. In one theme, it has square edges, a small amount of padding, and a small drop shadow. In the other theme, it has round edges, larger padding, and a large, soft drop shadow. If all of the card styles were encapsulated within `.card`, a theme could control all of these with only CSS. But with utility-first CSS, JS would need to know to conditionally apply a different set of utility classes.
 - Stylesheet size: utility classes for every property and variant need to be defined upfront, but many may never be used
     - Can be addressed with build tools, but that can be complicated
 - Global design changes can be tedious
-    - depending on the change, may need to find and replace every instance of a UI pattern and update the CSS
+    - depending on the change, may need to find and replace every instance of a UI pattern and update the HTML
     - with a component-based UI framework like React, this is largely a moot point, as a resuable component should have already encapsulated the UI pattern
 
 #### Notes
 
+- Using a templating language (e.g. ERB) or a component-based UI framework (e.g. React) largely negates the concern with global design changes. The markup for reusable interface elements should already be encapsulated in partials or components, so a change should only need to be made in one place.
+- Concerns about stylesheet size can be addressed with the right tooling, but configuring that can be complicated depending on your setup.
 - All your utility classes should have the same specificity score (10), so priority is determined by their order in the stylesheet. That means you have to make a decision on which variants within a specific utility category take precedence. For example, does `.margin-b--none` take precedence over `.margin--m`?
 
 ## Takeaways:
 
-- Utility first allows for rapid prototyping and building customized interfaces with no custom CSS
-- Favors composition instead of inheritance (just like React best practices)
-- A combination of BEM-like component classes and utility classes strikes a nice balance (and is what we do in Particle). E.g. use utility classes for one-off cases, prototyping, exploring new patterns, etc. Extract utility classes into "component" classes when patterns emerge or when benefits of context-aware styles outway the costs
-- Reusable React components can abstract away the complexity and "mess" of applying many utility classes, so developers only need to think about the API of the component (via props) and not about the styling concerns
-    - so we can probably lean more heavily on utility classes in our Particle components than we currently do
+- Utility first allows for rapid prototyping and building customized interfaces with no custom CSS.
+- It favors composition instead of inheritance (just like React best practices).
+- A combination of BEM-like component classes and utility classes strikes a nice balance (and is what we do in Particle). E.g. use utility classes for one-off cases, prototyping, exploring new patterns, etc. Extract utility classes into "component" classes when patterns emerge or when benefits of context-aware styles outway the costs.
+- Reusable React components can abstract away the complexity and "mess" of applying many utility classes, so developers only need to think about the API of the component (via props) and not about the styling concerns.
 
 
 ## Resources
